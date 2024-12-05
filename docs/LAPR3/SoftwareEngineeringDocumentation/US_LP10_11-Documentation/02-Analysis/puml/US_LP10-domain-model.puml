@@ -1,0 +1,45 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+'left to right direction
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+title Domain Model
+
+'agent works for store
+'store has properties
+'properties can be organized in a list of properties
+'agent sends a response
+
+class IrrigationProgrammer{
+}
+
+class IrrigationProgram{
+    startTimes
+    startDate
+    parcel
+    irrigationDuration
+    regularity
+    hasMix
+    mix
+    mixRegularity
+}
+
+class IrrigationProgramRepository {
+    irrigationProgramArraylist
+}
+
+class OracleSBDG {
+    procedure : PRCWATERINGREGISTER
+}
+
+
+IrrigationProgrammer "1" -- "1" IrrigationProgram : makes a >
+IrrigationProgram "1" - "1" IrrigationProgramRepository : is saved on >
+IrrigationProgram "1" --- "1" OracleSBDG: is registed on
+@enduml

@@ -1,0 +1,5 @@
+USLP03 - Como Product Owner, pretendo que seja desenvolvida uma funcionalidade que permita de forma autom´atica consuma o plano de rega gerado pelo
+simulador do controlador desenvolvido na USLP02 e que de forma escalonada ap´os
+a conclus˜ao da rega em cada sector registe essa opera¸c˜ao no caderno de campo.
+Nota: No desenvolvimento desta US ser˜ao intencionalmente aspectos estudados
+em Sistemas Distribu´ıdos (como por exemplo tolerˆancia a falhas)

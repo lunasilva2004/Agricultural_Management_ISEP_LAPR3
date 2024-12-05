@@ -1,0 +1,146 @@
+
+CHAMADA DA FUNCTION:
+
+SET SERVEROUTPUT ON --para ativar a exibição no DBMS_OUTPUT
+
+DECLARE
+  v_AnoCivil NUMBER := 2023;
+  v_Cursor SYS_REFCURSOR;
+  v_CulturaID NUMBER;
+  v_Cultura VARCHAR2(255);
+  v_AnoCivilResultado NUMBER;
+  v_ConsumoAguaMinutos NUMBER;
+BEGIN
+  v_Cursor := fncConsumoAguaCulturas(v_AnoCivil);
+
+  -- Imprimir os resultados usando DBMS_OUTPUT ou FETCH conforme necessário
+  LOOP
+    FETCH v_Cursor INTO v_CulturaID, v_Cultura, v_AnoCivilResultado, v_ConsumoAguaMinutos;
+    EXIT WHEN v_Cursor%NOTFOUND;
+
+    -- Saída dos resultados usando DBMS_OUTPUT
+    DBMS_OUTPUT.PUT_LINE('CulturaID: ' || v_CulturaID);
+    DBMS_OUTPUT.PUT_LINE('Cultura: ' || v_Cultura);
+    DBMS_OUTPUT.PUT_LINE('AnoCivilResultado: ' || v_AnoCivilResultado);
+    DBMS_OUTPUT.PUT_LINE('ConsumoAguaMinutos: ' || v_ConsumoAguaMinutos);
+    -- Continue conforme necessário
+  END LOOP;
+
+  CLOSE v_Cursor;
+END;
+
+
+----------------------------------------------------------------------------------------------------------------------------
+FUNCTION:
+
+create or replace NONEDITIONABLE FUNCTION fncConsumoAguaCulturas(p_AnoCivil NUMBER)
+RETURN SYS_REFCURSOR
+AS
+  l_refcur_consumo SYS_REFCURSOR;
+BEGIN
+  OPEN l_refcur_consumo FOR
+    WITH ConsumoAguaCulturas AS (
+        SELECT
+            C.CulturaID,
+            C.Designacao AS Cultura,
+            EXTRACT(YEAR FROM O.Data) AS AnoCivil,
+            SUM(R.Duracao) AS ConsumoAguaMinutos
+        FROM
+            Rega R
+        JOIN
+            Operacao O ON R.OperacaoID = O.OperacaoID
+        JOIN
+            SetorCultura SC ON R.SetorID = SC.SetorID
+        JOIN
+            Cultura C ON SC.CulturaID = C.CulturaID
+        WHERE
+            O.Data IS NOT NULL
+        GROUP BY
+            C.CulturaID, C.Designacao, EXTRACT(YEAR FROM O.Data)
+    )
+    SELECT
+        CulturaID,
+        Cultura,
+        AnoCivil,
+        ConsumoAguaMinutos
+    FROM ConsumoAguaCulturas
+    WHERE AnoCivil = p_AnoCivil
+      AND (AnoCivil, ConsumoAguaMinutos) IN (
+        SELECT AnoCivil, MAX(ConsumoAguaMinutos) AS MaxConsumoAguaMinutos
+        FROM ConsumoAguaCulturas
+        WHERE AnoCivil = p_AnoCivil
+        GROUP BY AnoCivil
+    )
+    ORDER BY ConsumoAguaMinutos DESC, Cultura;
+
+  RETURN l_refcur_consumo;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WITH ConsumoAguaCulturas AS (
+    SELECT
+        C.CulturaID,
+        C.Designacao AS Cultura,
+        EXTRACT(YEAR FROM O.Data) AS AnoCivil,
+        SUM(R.Duracao) AS ConsumoAguaMinutos
+    FROM
+        Rega R
+    JOIN
+        Operacao O ON R.OperacaoID = O.OperacaoID
+    JOIN
+        SetorCultura SC ON R.SetorID = SC.SetorID
+    JOIN
+        Cultura C ON SC.CulturaID = C.CulturaID
+    WHERE
+        O.Data IS NOT NULL
+    GROUP BY
+        C.CulturaID, C.Designacao, EXTRACT(YEAR FROM O.Data)
+)
+SELECT
+    CulturaID,
+    Cultura,
+    AnoCivil,
+    ConsumoAguaMinutos
+FROM ConsumoAguaCulturas
+WHERE AnoCivil = <SeuAnoCivilDesejado>
+  AND (AnoCivil, ConsumoAguaMinutos) IN (
+    SELECT AnoCivil, MAX(ConsumoAguaMinutos) AS MaxConsumoAguaMinutos
+    FROM ConsumoAguaCulturas
+    WHERE AnoCivil = <SeuAnoCivilDesejado>
+    GROUP BY AnoCivil
+)
+ORDER BY
+    ConsumoAguaMinutos DESC, Cultura;

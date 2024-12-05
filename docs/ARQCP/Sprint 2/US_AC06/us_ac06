@@ -1,0 +1,7 @@
+USAC06 - Altere a função:
+        void extract_token(char* input, char* token,int* output)
+desenvolvida na USAC01 para:
+        int extract_token(char* input, char* token, int* output)
+que retorna 1 em caso de conseguir extrair a informação do token e 0 em caso contrário.
+
+Critério de aceitação: Esta função deve ser implementada em Assembly.

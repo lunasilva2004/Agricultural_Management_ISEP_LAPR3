@@ -1,0 +1,22 @@
+--CREATE TABLES
+CREATE TABLE Caderno_De_Campo (ID_Caderno_De_Campo number(10) NOT NULL, Data date, Parcela number(10), Registo_Fertilizacao varchar2(255), Registo_Meteorologico varchar2(255), Registo_Colheita varchar2(255), Registo_Rega varchar2(255), PRIMARY KEY (ID_Caderno_De_Campo));
+CREATE TABLE Cultura (ID_Cultura number(10) GENERATED AS IDENTITY, ParcelaID_Parcela number(10) NOT NULL, NomeCultura varchar2(255) NOT NULL, Data_Inicial date NOT NULL, Data_Final date, Quantidade number(10, 2) NOT NULL, Unidade varchar2(255) NOT NULL, Parcela varchar2(255), Tipo varchar2(255), PRIMARY KEY (ID_Cultura));
+CREATE TABLE Edificio (ID_Edificio number(10) NOT NULL, Area number(10), Designacao varchar2(255), Unidade_Area varchar2(255), Tipo_Edificio varchar2(255), Dimensao number(10), PRIMARY KEY (ID_Edificio));
+CREATE TABLE Estacao_Meteorologica (ID_EstacaoMeteorologica number(10) NOT NULL, PRIMARY KEY (ID_EstacaoMeteorologica));
+CREATE TABLE Fator_Producao (ID_FatorProducao number(10) NOT NULL, Nome_Comercial varchar2(255) NOT NULL, Fabricante varchar2(255) NOT NULL, Formato varchar2(255) NOT NULL, Tipo_Formulacao varchar2(255) NOT NULL, Aplicacao varchar2(255) NOT NULL, CulturaID_Cultura number(10), PRIMARY KEY (ID_FatorProducao));
+CREATE TABLE Ficha_Tecnica (ID_FichaTecnica number(10) NOT NULL, Fator_ProducaoID_FatorProducao number(10) NOT NULL, C1 varchar2(255) NOT NULL, Percentagem1 number(10) NOT NULL, C2 varchar2(255), Percentagem2 number(10), C3 varchar2(255), Percentagem3 number(10), C4 varchar2(255), Percentagem4 number(10), PRIMARY KEY (ID_FichaTecnica));
+CREATE TABLE Operacao (ID_Operacao number(10) NOT NULL, ParcelaID_Parcela number(10) NOT NULL, CulturaID_Cultura number(10), Data date NOT NULL, Tipo_Operacao varchar2(255) NOT NULL, Modo_Tipo_Operacao varchar2(255), Fator_ProducaoID_FatorProducao number(10), Quantidade number(10), Unidade varchar2(255), PRIMARY KEY (ID_Operacao));
+CREATE TABLE Parcela (ID_Parcela number(10) NOT NULL, Designacao varchar2(255) NOT NULL, Area number(10) NOT NULL, Unidade_Area varchar2(255), PRIMARY KEY (ID_Parcela));
+CREATE TABLE Planta (ID_Planta number(10) NOT NULL, Especie varchar2(255) NOT NULL, Nome_Comum varchar2(255) NOT NULL, Variedade varchar2(255), TipoPlantacao varchar2(255), Sementeira varchar2(255), Poda varchar2(255), Floracao varchar2(255), Colheita varchar2(255), PRIMARY KEY (ID_Planta));
+CREATE TABLE Sensor (ID_Sensor number(10) NOT NULL, Sensor varchar2(255) NOT NULL, EstacaoMeteorologicaID_EstacaoMeteorologica number(10) NOT NULL, PRIMARY KEY (ID_Sensor));
+
+--ALTER TABLES
+ALTER TABLE Operacao ADD CONSTRAINT FKOperacao716807 FOREIGN KEY (CulturaID_Cultura) REFERENCES Cultura (ID_Cultura);
+ALTER TABLE Operacao ADD CONSTRAINT FKOperacao619346 FOREIGN KEY (Fator_ProducaoID_FatorProducao) REFERENCES Fator_Producao (ID_FatorProducao);
+ALTER TABLE Operacao ADD CONSTRAINT FKOperacao759580 FOREIGN KEY (ParcelaID_Parcela) REFERENCES Parcela (ID_Parcela);
+ALTER TABLE Ficha_Tecnica ADD CONSTRAINT FKFicha_Tecn291356 FOREIGN KEY (Fator_ProducaoID_FatorProducao) REFERENCES Fator_Producao (ID_FatorProducao);
+ALTER TABLE Fator_Producao ADD CONSTRAINT FKFator_Prod241734 FOREIGN KEY (CulturaID_Cultura) REFERENCES Cultura (ID_Cultura);
+ALTER TABLE Cultura ADD CONSTRAINT FKCultura844663 FOREIGN KEY (ParcelaID_Parcela) REFERENCES Parcela (ID_Parcela);
+ALTER TABLE Sensor ADD CONSTRAINT FKSensor53317 FOREIGN KEY (EstacaoMeteorologicaID_EstacaoMeteorologica) REFERENCES Estacao_Meteorologica (ID_EstacaoMeteorologica);
+
+--CREATE TABLES

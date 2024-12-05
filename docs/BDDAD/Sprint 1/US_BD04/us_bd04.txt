@@ -1,0 +1,8 @@
+**US BD04 Como Product Owner pretendo que sejam importados os dados de um sistema legacy,
+fornecidos numa folha de cálculo.**
+
+Critérios de Aceitação:
+
+- Esperado: construção manual dos scripts de inserção dos dados
+- Acima do esperado: geração automática do código SQL de inserção de dados a partir da folha de
+cálculo (e.g. fórmulas Excel, scripts noutra linguagem qualquer, etc.)

@@ -1,0 +1,2 @@
+USAC05 Desenvolva uma fun¸c˜ao que dado um array retorne a sua mediana.
+int mediana(int* vec, int num);

@@ -1,0 +1,2 @@
+USAC04 Desenvolva uma função em assembly que ordene um dado array.
+void sort_array(int* vec, int num);

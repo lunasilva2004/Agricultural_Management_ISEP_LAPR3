@@ -1,0 +1,103 @@
+CREATE OR REPLACE PROCEDURE AnnullOperation(p_OperacaoID NUMBER) AS
+    v_DataPrevista DATE;
+    v_OperacoesDependentes NUMBER;
+BEGIN
+    -- Check if the operation exists
+    SELECT Data
+    INTO v_DataPrevista
+    FROM Operacao
+    WHERE OperacaoID = p_OperacaoID;
+
+    -- Check if the operation can be annulled
+    IF v_DataPrevista + 3 >= SYSDATE THEN
+        -- Check if there are no dependent operations
+        SELECT COUNT(*)
+        INTO v_OperacoesDependentes
+        FROM Operacao
+        WHERE OperacaoID <> p_OperacaoID
+        AND Data > v_DataPrevista
+        AND EstadoOperacao = 'Pendente';
+
+        IF v_OperacoesDependentes = 0 THEN
+            -- Annull the operation
+            UPDATE Operacao
+            SET EstadoOperacao = 'Anulada'
+            WHERE OperacaoID = p_OperacaoID;
+
+            COMMIT;
+            DBMS_OUTPUT.PUT_LINE('Operation annulled successfully');
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Error: There are operations dependent on this one.');
+        END IF;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Error: The deadline for annulment has passed.');
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Operation not found.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: More than one operation found.');
+END AnnullOperation;
+/
+
+--------------------------------------------------------------
+--------------------------------------------------------------
+--------------------------------------------------------------
+
+-------SUCCESS CASE-------
+-------INSERTS-------
+
+DECLARE
+    v_OperacaoID NUMBER;
+BEGIN
+    -- Insert a watering operation
+    INSERT INTO Operacao (OperacaoID, DesignacaoOperacao, Data, Instante, EstadoOperacao)
+    VALUES (OPERACAO_SEQ.NEXTVAL, 'Operação de Rega', TO_DATE('04/01/2024 15:00', 'DD/MM/YYYY HH24:MI'), TO_DATE('04/01/2024 15:00', 'DD/MM/YYYY HH24:MI'), 'Valida')
+    RETURNING OperacaoID INTO v_OperacaoID;
+
+    -- Insert a watering operation details
+    INSERT INTO Rega (OperacaoID, SetorID, Duracao, HoraInicial, HoraFinal)
+    VALUES (v_OperacaoID, 11, 60, '15:00', TO_CHAR(TO_DATE('04/01/2024 15:00', 'DD/MM/YYYY HH24:MI') + INTERVAL '1' HOUR, 'HH24:MI'));
+END;
+/
+
+-------ANNULL-------
+
+DECLARE
+    v_OperacaoID NUMBER;
+BEGIN
+    -- Get the ID of the last inserted operation
+    SELECT MAX(OperacaoID) INTO v_OperacaoID FROM Operacao;
+
+    -- Annull the operation
+    AnnullOperation(v_OperacaoID);
+
+END;
+/
+
+--------------------------------------------------------------
+--------------------------------------------------------------
+--------------------------------------------------------------
+
+-------INSUCCESS CASE-------
+-------ANNULL-------
+
+DECLARE
+    v_OperacaoID NUMBER;
+BEGIN
+    -- Try to annull the specific operation
+    SELECT Operacao.OperacaoID
+    INTO v_OperacaoID
+    FROM Operacao
+    JOIN Rega ON Operacao.OperacaoID = Rega.OperacaoID
+    WHERE TO_CHAR(Operacao.Data, 'DD/MM/YYYY') = '02/10/2023'
+    AND Rega.HoraInicial = '06:00'
+    AND Rega.Duracao = 60;
+
+    -- Call the procedure to annull the operation
+    AnnullOperation(v_OperacaoID);
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No operation found that matches the specified criteria.');
+END;
+/

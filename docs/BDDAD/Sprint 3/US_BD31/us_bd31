@@ -1,0 +1,38 @@
+create or replace NONEDITIONABLE PROCEDURE PRCREGISTARFERTIRREGA(
+  p_designacaoMix IN VARCHAR2,
+  p_fatoresProducao IN fatoresProducaoArrayType,
+  p_status OUT NUMBER,
+  p_erro OUT VARCHAR2
+) AS
+  v_fertirregaID NUMBER;
+BEGIN
+  -- Inicializar os parâmetros OUT
+  p_status := 0;  -- 0 indica insucesso por padrão
+  p_erro := NULL;  -- Inicialmente, não há erro
+
+  -- Tentar registrar uma nova Fertirrega
+  BEGIN
+    -- Registrar uma nova Fertirrega
+    INSERT INTO Fertirrega (DesignacaoMix) VALUES (p_designacaoMix) RETURNING FertirregaID INTO v_fertirregaID;
+
+    -- Associar fatores de produção à Fertirrega
+    FOR i IN 1..p_fatoresProducao.COUNT LOOP
+      INSERT INTO Fertirrega_FatorProducao (FertirregaFertirregaID, FatorProducaoFPID)
+      VALUES (v_fertirregaID, p_fatoresProducao(i));
+    END LOOP;
+
+    -- Definir status como 1 (sucesso)
+    p_status := 1;
+
+    -- Comitar as alterações
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Fertirrega registrada com sucesso! ID: ' || v_fertirregaID);
+  EXCEPTION
+    WHEN OTHERS THEN
+      -- Capturar qualquer exceção e definir status como 0 (insucesso)
+      p_status := 0;
+      p_erro := SQLERRM;  -- Atribuir a mensagem de erro à variável OUT
+      DBMS_OUTPUT.PUT_LINE('Erro ao registrar Fertirrega: ' || p_erro);
+  END;
+END PRCREGISTARFERTIRREGA;

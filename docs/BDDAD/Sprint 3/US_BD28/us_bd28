@@ -1,0 +1,10 @@
+
+
+TRIGGER QUE NAO PERMITE APAGAR DADOS DA TABELA OPERACAO
+
+create or replace NONEDITIONABLE TRIGGER trg_bloquear_delete_operacao
+    BEFORE DELETE ON Operacao
+    FOR EACH ROW
+    BEGIN
+      RAISE_APPLICATION_ERROR(-20001, 'Não é permitido excluir registos da tabela de operações! Pode mudar o Estado da Operação!');
+    END;

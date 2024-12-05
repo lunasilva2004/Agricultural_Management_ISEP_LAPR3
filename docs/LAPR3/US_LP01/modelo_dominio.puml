@@ -1,0 +1,109 @@
+@startuml
+
+title Modelo de Domínio
+
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+class Caderno_Campo {
+ID_Caderno_De_Campo
+Data
+Parcela
+Registo_Fertilização
+Registo_Rega
+Registo_Colheita
+Registo_Metereológico
+}
+
+class Cultura {
+ID_Cultura
+Nome_Cultura
+Data_Inicial
+Data_Final
+Quantidade
+Unidade
+Parcela
+Tipo
+}
+
+class Edifício {
+ID_Edifício
+Area
+Designação
+Unidade_Area
+Tipo_Edifício
+Dimensão
+}
+
+class Estação_Metereológica {
+ID_EstaçãoMetereológica
+}
+
+class Fator_Produção {
+ID_FatorProdução
+Nome_Comercial
+Fabricante
+Formato
+Tipo_Formulação
+Aplicação
+}
+
+class Ficha_Técnica {
+ID_FichaTécnica
+C1
+Percentagem1
+C2
+Percentagem2
+C3
+Percentagem3
+C4
+Percentagem4
+}
+
+class Operação {
+ID_Operação
+Data
+Tipo_Operação
+Modo_Tipo_Operação
+Quantidade
+Unidade
+}
+
+class Parcela {
+ID_Parcela
+Designação
+Area
+Unidade_Area
+}
+
+class Planta {
+ID_Planta
+Espécie
+Nome_Comum
+Variedade
+Tipo_Plantação
+Sementeira
+Poda
+Floração
+Colheita
+}
+
+class Sensor {
+ID_Sensor
+Sensor
+}
+
+Estação_Metereológica "1" -- "*" Sensor
+Parcela "1" -- "*" Cultura
+Parcela "1" -- "*" Operação
+Operação "*" -- "1" Cultura
+Operação "*" -- "1" Fator_Produção
+Fator_Produção "1" -- "1" Ficha_Técnica
+Fator_Produção "*" -- "1" Cultura
+
+@enduml

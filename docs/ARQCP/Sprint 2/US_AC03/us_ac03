@@ -1,0 +1,7 @@
+US AC03 - Desenvolva uma funçãoo em assembly que copie n valores (int num) de
+um array (buffer circular) para outro array (int * vec).
+
+int copy_num_vec(int* array, int read, int write, int num, int* vec);
+
+No caso de não existirem os n elementos no array, a função não deve copiar os
+elementos e retornar 0, caso contrário deve retornar 1.

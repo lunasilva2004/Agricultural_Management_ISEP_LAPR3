@@ -1,0 +1,10 @@
+USAC02 Desenvolva uma fun¸c˜ao em assembly que insira um valor (int value) num
+array (int * array). Este array deve ser implementado de acordo com as regras de
+um buffer circular.
+void enqueue_value(int* array, int length,
+int* read, int* write, int value);
+Um buffer circular ´e um array de tamanho fixo (definido por length) cuja pol´ıtica
+de inser¸c˜oes e remo¸c˜oes dos elementos do array permite a criar a circulariedade,
+isto ´e, faz com que o fim do array pare¸ca estar ligado ao in´ıcio (int * read,
+int *write). Se o array estiver cheio o elemento mais antigo no array deve ser
+descartado.

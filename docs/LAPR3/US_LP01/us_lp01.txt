@@ -1,0 +1,12 @@
+**US LP01 - Como Product Owner, pretendo que seja elaborado o modelo de domínio (nível conceptual).**
+
+Este modelo será um elemento fundamental de comunicação entre todos os
+interessados na solução a desenvolver. O diagrama do modelo de domínio é um documento “vivo” e
+deverá refletir em cada momento o entendimento partilhado sobre o domínio pelos interessados.
+
+Critérios de aceitação:
+
+- O modelo de dados deve cobrir a atividade da instalação agrícola, ficando excluída a
+comercialização e distribuição de produtos e a gestão da rega. Apesar do sistema de rega fazer parte
+da instalação agrícola, não é necessária manter na base de dados a topologia detalhada.
+- Esperado: modelo "básico" partilhado no Visual Paradigm ou docs no git (e.g., PlantUML).

@@ -1,0 +1,14 @@
+**US BD02 Como Product Owner, pretendo que seja elaborado o modelo relacional (nível lógico).**
+
+Critérios de Aceitação:
+
+- O modelo de dados deve cobrir a atividade da instalação agrícola, ficando excluída a
+comercialização e distribuição de produtos e a gestão da rega. Apesar do sistema de rega fazer parte
+da instalação agrícola, não é necessária manter na base de dados a topologia detalhada. Pode-se
+considerar cada sistema de rega como uma "caixa preta", associando cada sistema às parcelas que
+rega.
+
+- Esperado: modelo "básico" partilhado no Visual Paradigm ou docs no git (e.g.,
+PlantUML).
+- Acima do esperado: modelo completo no Visual Paradigm, que inclua todas as restrições e que
+permita a geração automática de ‘script’ de modelo físico.

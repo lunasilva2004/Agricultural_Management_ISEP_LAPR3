@@ -1,0 +1,22 @@
+create or replace NONEDITIONABLE TRIGGER trg_registar_operacao_log
+AFTER INSERT ON operacao
+FOR EACH ROW
+BEGIN
+    INSERT INTO operacaolog (OperacaoLogID, Instante, TipoOperacao, DataOperacao, EstadoOperacao)
+    VALUES (SEQ_OPERACAO_LOG.NEXTVAL, SYSTIMESTAMP, :NEW.DesignacaoOperacao, :NEW.Data, :NEW.EstadoOperacao);
+END trg_registar_operacao_log;
+
+------------------------------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE NONEDITIONABLE TRIGGER trg_registar_mudança_operacao_log
+AFTER UPDATE ON operacao
+FOR EACH ROW
+BEGIN
+    IF
+       :NEW.EstadoOperacao <> :OLD.EstadoOperacao THEN
+
+        INSERT INTO operacaolog (OperacaoLogID, OperacaoID, Instante, TipoOperacao, DataOperacao, EstadoOperacao)
+        VALUES (SEQ_OPERACAO_LOG.NEXTVAL, :NEW.OperacaoID, SYSTIMESTAMP, 'Alteração Estado Operação', :NEW.Data, :NEW.EstadoOperacao);
+    END IF;
+END trg_registar_operacao_log;
+

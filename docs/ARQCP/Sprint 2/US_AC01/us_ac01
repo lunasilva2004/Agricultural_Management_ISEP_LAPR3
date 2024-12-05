@@ -1,0 +1,6 @@
+USAC01 Desenvolva uma fun¸c˜ao em assembly que dada uma string (input) com a
+informa¸c˜ao gerada pelo ColetorDeDados e um token extraia a informa¸c˜ao (campo
+value da string) referente a esse token (output).
+void extract_token(char* input, char* token, int* output);
+E preciso te rem aten¸c˜ao que o campo value da string ´e um n´umero real. Este ´
+componente tem uma limita¸c˜ao que ´e s´o suporta n´umeros inteiros.

@@ -1,0 +1,52 @@
+create or replace NONEDITIONABLE PROCEDURE PRCWATERINGREGISTERWITHFERTIRREGA(
+    p_Data IN DATE,
+    p_Hora_Inicio IN VARCHAR2,
+    p_Hora_Fim IN VARCHAR2,
+    p_Duracao IN NUMBER,
+    p_Sector IN VARCHAR2,
+    p_Receita IN VARCHAR2,
+    p_ErrorMsg OUT VARCHAR2,
+    p_Status OUT NUMBER
+) AS
+    v_IdOperacao NUMBER;
+    v_NextOperacaoID NUMBER;
+    v_DesignacaoOperacao VARCHAR2(255);
+
+BEGIN
+    p_Status := 0; -- Inicialize a variável de status
+
+    SELECT MAX(OperacaoID) + 1 INTO v_NextOperacaoID FROM Operacao;
+
+    -- Tratar caso em que a tabela está vazia (MAX(OperacaoID) será NULL)
+    IF v_NextOperacaoID IS NULL THEN
+        v_NextOperacaoID := 1;
+    END IF;
+
+    -- Definir a designação com base em p_Receita
+    IF p_Receita IS NOT NULL AND LENGTH(p_Receita) > 0 THEN
+        v_DesignacaoOperacao := 'Operação de Fertirrega';
+    ELSE
+        v_DesignacaoOperacao := 'Operação de Rega';
+    END IF;
+
+    -- Inserir dados na tabela Operacao
+    INSERT INTO Operacao (OperacaoID, DesignacaoOperacao, Data, Instante)
+    VALUES (v_NextOperacaoID, v_DesignacaoOperacao, p_data, SYSTIMESTAMP);
+
+    -- Obter o ID da última operação inserida
+    SELECT MAX(OperacaoID) INTO v_IdOperacao FROM Operacao;
+
+    -- Verificar se p_Receita não é nulo antes de inserir dados na tabela Rega
+    IF p_Receita IS NOT NULL THEN
+        INSERT INTO Rega (OperacaoID, SetorID, Duracao, HoraInicial, HoraFinal, FertirregaID)
+        VALUES (v_IdOperacao, p_Sector, p_Duracao, p_Hora_Inicio, p_Hora_Fim, (SELECT FertirregaID FROM Fertirrega WHERE DesignacaoMix = p_Receita));
+    END IF;
+
+    -- Definir mensagem de sucesso
+    p_Status := 1;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Em caso de exceção, definir mensagem de erro apropriada
+        p_ErrorMsg := SQLERRM;
+END PRCWATERINGREGISTERWITHFERTIRREGA;

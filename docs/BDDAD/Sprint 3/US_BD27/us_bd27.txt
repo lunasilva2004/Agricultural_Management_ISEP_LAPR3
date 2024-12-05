@@ -1,0 +1,35 @@
+    --->   USBD27 Como Gestor Agrícola, pretendo que não seja possível alterar ou apagar os logs    <--
+
+    Bloquear acesso:
+    REVOKE UPDATE, DELETE ON operacao_log FROM Grupo 85;
+
+    Dar acesso:
+    GRANT UPDATE, DELETE ON operacao_log TO Grupo 85;
+
+
+----------------------------------------------------------------------------------------------------------------
+TRIGGER PARA BLOQUEAR APAGAR E ALTERAR LOGS:
+
+
+create or replace NONEDITIONABLE TRIGGER trg_bloquear_delete_update_log
+    BEFORE DELETE OR UPDATE ON OperacaoLog
+    FOR EACH ROW
+BEGIN
+    IF UPDATING THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Não é permitido alterar registos na tabela de log de operações!');
+    ELSIF DELETING THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Não é permitido excluir registos da tabela de log de operações!');
+    END IF;
+END;
+
+
+
+----------------------------------------------------------------------------------------------------------------
+TRIGGER PARA BLOQUEAR APAGAR LOGS:
+
+    CREATE OR REPLACE TRIGGER trg_bloquear_delete_log
+    BEFORE DELETE ON OperacaoLog
+    FOR EACH ROW
+    BEGIN
+      RAISE_APPLICATION_ERROR(-20001, 'Não é permitido excluir registos da tabela de log de operações!');
+    END;

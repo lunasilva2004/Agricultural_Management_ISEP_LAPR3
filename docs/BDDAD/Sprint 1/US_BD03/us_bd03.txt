@@ -1,0 +1,8 @@
+**US BD03 Como Product Owner pretendo que seja instanciado o modelo relacional (nível físico).**
+
+Critérios de Aceitação:
+
+- Será demonstrado no Oracle LiveSQL.
+- Esperado: criação manual do script
+- Acima do esperado: geração automática a partir do Visual Paradigm (gestão centralizada de
+alterações)

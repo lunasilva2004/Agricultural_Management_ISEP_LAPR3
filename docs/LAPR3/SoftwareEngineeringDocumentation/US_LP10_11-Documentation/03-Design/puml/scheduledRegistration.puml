@@ -1,0 +1,53 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant ":Main" as Main
+participant ":MenuLaprUI" as UI
+participant ":RegisterWateringInDatabaseUI" as RegisterWateringUI
+participant ":RegistarOperacaoController" as RegistarOperacaoController
+participant "repositories :Repositories" as repositories
+participant ":IrrigationProgramRepository" as irrigationProgramRepository
+
+activate Main
+Main -> UI : executeScheduledRegistrations()
+
+activate UI
+UI -> UI : newScheduledThreadPool()
+UI -> RegisterWateringUI : wateringUI.scheduledRegistation()
+
+activate RegisterWateringUI
+RegisterWateringUI -> repositories : getIrrigationProgramRepository()µ
+
+activate repositories
+repositories --> RegisterWateringUI : irrigationProgramRepository
+deactivate repositories
+
+RegisterWateringUI -> irrigationProgramRepository : getIrrigationArrayList()
+activate irrigationProgramRepository
+
+irrigationProgramRepository --> RegisterWateringUI : irrigationArrayList
+deactivate irrigationProgramRepository
+
+RegisterWateringUI -> RegistarOperacaoController : wateringRegister()
+activate RegistarOperacaoController
+
+RegistarOperacaoController -> irrigationProgramRepository : wateringRegister()
+
+activate irrigationProgramRepository
+irrigationProgramRepository -> irrigationProgramRepository : CallableStatement
+
+irrigationProgramRepository --> RegistarOperacaoController
+deactivate irrigationProgramRepository
+
+
+RegistarOperacaoController --> RegisterWateringUI
+deactivate RegistarOperacaoController
+
+
+RegisterWateringUI --> UI
+deactivate RegisterWateringUI
+
+UI --> Main
+deactivate Main
+@enduml

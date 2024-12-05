@@ -1,0 +1,12 @@
+
+                                    US BD24
+_____________________________________________________________________________________________________________________
+CRIAÇÃO DA COLUNA Instante (Timestamp) NA TABELA Operacao
+
+CREATE TABLE Operacao (
+  OperacaoID         number(10) GENERATED AS IDENTITY,
+  DesignacaoOperacao char(255) NOT NULL,
+  Data               date NOT NULL,
+  Instante           timestamp(0) NOT NULL,
+  EstadoOperacao     char(255) DEFAULT 'Válida' NOT NULL,
+  PRIMARY KEY (OperacaoID));
